@@ -14,7 +14,7 @@
 button{width:100%;border:0;border-radius:15px;padding:15px;font:inherit;font-weight:750;margin-top:9px}.primary{background:#111;color:#fff}.secondary{background:#eee;color:#111}.danger{background:#fbeaea;color:#8b1e1e}
 .hidden{display:none!important}.row{display:flex;justify-content:space-between;align-items:center}input{width:100%;padding:13px;border:1px solid #ddd;border-radius:12px;font:inherit;margin-top:6px}
 .pages{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:15px}.page{position:relative;aspect-ratio:3/4;border-radius:12px;overflow:hidden;background:#eee}.page img{width:100%;height:100%;object-fit:cover}.num{position:absolute;right:5px;top:5px;background:#111d;color:#fff;border-radius:7px;padding:3px 7px;font-size:12px}.del{position:absolute;left:5px;top:5px!important;width:auto!important;margin:0!important;padding:4px 9px!important;background:#fff!important;color:#111}
-.q{display:grid;grid-template-columns:repeat(3,1fr);gap:7px}.q button{background:#eee;margin:0;padding:11px 4px}.q .on{background:#111;color:#fff}
+.cam-actions{display:grid;grid-template-columns:1fr 1fr;gap:9px}.cam-actions button{margin-top:9px}.q{display:grid;grid-template-columns:repeat(3,1fr);gap:7px}.q button{background:#eee;margin:0;padding:11px 4px}.q .on{background:#111;color:#fff}
 .progress{height:8px;background:#eee;border-radius:8px;overflow:hidden;margin:10px 0}.bar{height:100%;width:0;background:#111;transition:width .2s}
 #status{text-align:center;min-height:24px;color:#666;margin-top:9px}
 .camera{position:relative;background:#111;border-radius:18px;overflow:hidden;aspect-ratio:3/4}.camera video{width:100%;height:100%;object-fit:cover}.guide{position:absolute;inset:12% 8%;border:2px solid #fff9;border-radius:14px;color:#fff;text-align:center;padding-top:8px;background:#0002}
@@ -38,8 +38,7 @@ button{width:100%;border:0;border-radius:15px;padding:15px;font:inherit;font-wei
 
 <section id="camCard" class="card hidden">
 <div class="camera"><video id="video" autoplay playsinline muted></video><div class="guide">ضع الورقة داخل الإطار</div></div>
-<button id="snap" class="primary">التقاط الصفحة</button>
-<button id="stopCam" class="secondary">إنهاء التصوير</button>
+<div class="cam-actions"><button id="snap" class="primary">📸 التقاط الصفحة</button><button id="stopCam" class="secondary">✓ إنهاء التصوير</button></div>
 <canvas id="canvas" hidden></canvas>
 <div id="camStatus" class="muted"></div>
 </section>
@@ -87,12 +86,13 @@ $("cameraBtn").onclick=openCamera;$("stopCam").onclick=stopCamera;
 $("snap").onclick=()=>{
  const v=$("video"),c=$("canvas");if(!S.stream||v.readyState<2)return;
  c.width=v.videoWidth;c.height=v.videoHeight;c.getContext("2d",{alpha:false}).drawImage(v,0,0);
- c.toBlob(blob=>{if(blob){addFiles([new File([blob],"scan.jpg",{type:"image/jpeg"})]);$("camStatus").textContent="تم التقاط الصفحة. يمكنك التقاط الصفحة التالية."}},"image/jpeg",.9);
+ c.toBlob(blob=>{if(blob){addFiles([new File([blob],"scan.jpg",{type:"image/jpeg"})],false);$("camStatus").textContent="تم التقاط الصفحة. يمكنك التقاط الصفحة التالية."}},"image/jpeg",.9);
 };
 
-function addFiles(files){
+function addFiles(files,scrollToEditor=true){
  for(const f of files)if(f.type.startsWith("image/"))S.items.push({file:f,url:URL.createObjectURL(f)});
- render();$("editor").scrollIntoView({behavior:"smooth"});
+ render();
+ if(scrollToEditor)$("editor").scrollIntoView({behavior:"smooth"});
 }
 function render(){
  $("editor").classList.toggle("hidden",!S.items.length);$("count").textContent=S.items.length+" صفحة";$("pages").innerHTML="";
