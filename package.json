@@ -1,0 +1,11 @@
+{
+  "name": "khafeef-files",
+  "private": true,
+  "version": "2.1.0",
+  "scripts": { "test": "node tests/file-workflow.cjs" },
+  "devDependencies": {
+    "pdf-lib": "1.17.1",
+    "pdfjs-dist": "5.4.296",
+    "playwright": "1.62.1"
+  }
+}
